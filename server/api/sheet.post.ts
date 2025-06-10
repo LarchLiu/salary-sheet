@@ -108,10 +108,10 @@ export default defineEventHandler(async (event) => {
       WHERE id = ${user.id};
     `
 
-    await db.sql`
-        INSERT INTO salary (id, sheet_date, salary_date, identity, name, phone, bankcard, address, salary, daily_wage, attendance_days, job)
-        VALUES (${uuidv4()}, ${sheetDate}, ${salaryDate}, ${user.identity}, ${user.name}, ${user.phone}, ${user.bankcard}, ${user.address}, ${user.salary}, ${dailyWage}, ${attendanceDays}, ${user.job});
-      `
+    // await db.sql`
+    //     INSERT INTO salary (id, sheet_date, salary_date, identity, name, phone, bankcard, address, salary, daily_wage, attendance_days, job)
+    //     VALUES (${uuidv4()}, ${sheetDate}, ${salaryDate}, ${user.identity}, ${user.name}, ${user.phone}, ${user.bankcard}, ${user.address}, ${user.salary}, ${dailyWage}, ${attendanceDays}, ${user.job});
+    //   `
   })
 
   // Add total row
