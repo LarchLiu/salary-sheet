@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "1122:3000"
+    volumes:
+      - 'salary-sheet-data:/app/.data'
+    environment:
+      NUXT_AI_API_BASE_URL: ${NUXT_AI_API_BASE_URL}
+      NUXT_AI_API_KEY: ${NUXT_AI_API_KEY}
+      NUXT_AI_MODEL: ${NUXT_AI_MODEL}
+    restart: always
+
+volumes:
+  salary-sheet-data:
+    driver: local
