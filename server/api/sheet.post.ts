@@ -1,7 +1,6 @@
 import type { BorderStyle } from 'exceljs'
 import type { SheetInfo, User } from '~/types'
 import ExcelJS from 'exceljs'
-import { v4 as uuidv4 } from 'uuid'
 import { maxSalary } from '../utils/constants'
 
 export default defineEventHandler(async (event) => {

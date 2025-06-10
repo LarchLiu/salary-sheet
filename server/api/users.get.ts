@@ -1,4 +1,5 @@
 import type { User } from '~/types'
+import { maxSalary } from '../utils/constants'
 
 export default defineEventHandler(async () => {
   const db = useDatabase()
