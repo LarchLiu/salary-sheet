@@ -1,4 +1,5 @@
 import type { User } from '~/types'
+import { maxSalary } from '../utils/constants'
 
 export default defineEventHandler(async (event) => {
   const user = await readBody<User>(event)
@@ -12,7 +13,7 @@ export default defineEventHandler(async (event) => {
       phone = ${user.phone.toString()},
       bankcard = ${user.bankcard.toString()},
       address = ${user.address},
-      salary = ${user.salary ?? 4900}
+      salary = ${user.salary || maxSalary}
     WHERE id = ${user.id};
     `
   return 'sucess'

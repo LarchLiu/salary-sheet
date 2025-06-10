@@ -2,6 +2,7 @@ import type { BorderStyle } from 'exceljs'
 import type { SheetInfo, User } from '~/types'
 import ExcelJS from 'exceljs'
 import { v4 as uuidv4 } from 'uuid'
+import { maxSalary } from '../utils/constants'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<SheetInfo>(event)
@@ -73,7 +74,7 @@ export default defineEventHandler(async (event) => {
     let dailyWage: number
     let attendanceDays: number
 
-    if (user.salary === 4900) {
+    if (user.salary === maxSalary) {
       dailyWage = 350
       attendanceDays = 14
     }

@@ -7,7 +7,7 @@ export default defineEventHandler(async () => {
   if (rawUsers.rows) {
     for (let i = 0; i < rawUsers.rows.length; i++) {
       const user = rawUsers.rows[i] as unknown as User
-      const job = user.salary >= 4900 ? '模板工' : '普工'
+      const job = user.salary >= maxSalary ? '模板工' : '普工'
       user.job = job
     }
   }

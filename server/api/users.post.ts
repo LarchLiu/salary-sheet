@@ -1,6 +1,7 @@
 import type { User } from '~/types'
 import OpenAI from 'openai'
 import { v4 as uuidv4 } from 'uuid'
+import { maxSalary } from '../utils/constants'
 
 const prompt = `帮我识别图片上的中国人员信息，姓名，身份证号(18位)，电话(13位)，工资，银行卡号(19位)，开户行地址。
 
@@ -86,7 +87,7 @@ export default defineEventHandler(async (event) => {
               const newUserId = uuidv4()
               const result = await db.sql`
                   INSERT INTO user (id, identity, name, phone, bankcard, address, salary)
-                  VALUES (${newUserId}, ${user.identity.toString()}, ${user.name}, ${user.phone.toString()}, ${user.bankcard.toString()}, ${user.address}, ${user.salary || 4900})
+                  VALUES (${newUserId}, ${user.identity.toString()}, ${user.name}, ${user.phone.toString()}, ${user.bankcard.toString()}, ${user.address}, ${user.salary || maxSalary})
                   RETURNING id;
                 `
               if (!result.rows || result.rows.length === 0 || !result.rows[0].id) {
@@ -100,7 +101,7 @@ export default defineEventHandler(async (event) => {
                 phone: user.phone.toString(),
                 bankcard: user.bankcard.toString(),
                 address: user.address,
-                salary: user.salary || 4900,
+                salary: user.salary || maxSalary,
               })
             }
             else {
@@ -123,6 +124,7 @@ export default defineEventHandler(async (event) => {
               }
               // Update the kept user with the new data
               if (user.identity && user.name && user.address && user.bankcard && user.phone) {
+                const salary = user.salary || userToKeep.salary as number || maxSalary
                 await db.sql`
                     UPDATE user
                     SET
@@ -131,7 +133,7 @@ export default defineEventHandler(async (event) => {
                       phone = ${user.phone.toString()},
                       bankcard = ${user.bankcard.toString()},
                       address = ${user.address},
-                      salary = ${user.salary ?? userToKeep.salary ?? 4900}
+                      salary = ${salary}
                     WHERE id = ${userToKeep.id};
                   `
                 allUsers.push({
@@ -141,7 +143,7 @@ export default defineEventHandler(async (event) => {
                   phone: user.phone.toString(),
                   bankcard: user.bankcard.toString(),
                   address: user.address,
-                  salary: user.salary ?? userToKeep.salary ?? 4900,
+                  salary: salary,
                 })
               }
               else {
@@ -156,6 +158,7 @@ export default defineEventHandler(async (event) => {
                 continue
               }
               if (user.identity && user.name && user.address && user.bankcard && user.phone) {
+                const salary = user.salary || existingUserData.salary as number || maxSalary
                 await db.sql`
                     UPDATE user
                     SET
@@ -164,7 +167,7 @@ export default defineEventHandler(async (event) => {
                       phone = ${user.phone.toString()},
                       bankcard = ${user.bankcard.toString()},
                       address = ${user.address},
-                      salary = ${user.salary ?? existingUserData.salary ?? 4900}
+                      salary = ${salary}
                     WHERE id = ${existingUserData.id};
                   `
                 allUsers.push({
@@ -174,7 +177,7 @@ export default defineEventHandler(async (event) => {
                   phone: user.phone.toString(),
                   bankcard: user.bankcard.toString(),
                   address: user.address,
-                  salary: user.salary ?? existingUserData.salary ?? 4900,
+                  salary: salary,
                 })
               }
               else {
@@ -192,7 +195,7 @@ export default defineEventHandler(async (event) => {
 
   for (let i = 0; i < allUsers.length; i++) {
     const user = allUsers[i] as User
-    const job = user.salary >= 4900 ? '模板工' : '普工'
+    const job = user.salary >= maxSalary ? '模板工' : '普工'
     user.job = job
   }
 
